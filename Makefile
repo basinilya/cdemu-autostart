@@ -1,6 +1,7 @@
 systemduserunitdir = /usr/lib/systemd/user
 libexecdir = /usr/lib
 pkglibexecdir = ${libexecdir}/cdemu-autostart
+docdir = /usr/share/doc/cdemu-autostart
 
 .PHONY: all clean install uninstall
 
@@ -9,6 +10,8 @@ all:
 clean:
 
 install:
+	install -d -m755 $(DESTDIR)$(docdir)/
+	install -m644 README.txt dbus-pre.service $(DESTDIR)$(docdir)/
 	install -d -m755 $(DESTDIR)$(pkglibexecdir)/
 	install -m755 dbus-hook $(DESTDIR)$(pkglibexecdir)/
 	install -d -m755 $(DESTDIR)$(systemduserunitdir)/
@@ -19,4 +22,4 @@ uninstall:
 		$(DESTDIR)$(systemduserunitdir)/dbus-pre.service \
 		$(DESTDIR)$(systemduserunitdir)/dbus-post.service \
 		$(DESTDIR)$(pkglibexecdir)/dbus-hook
-	-rmdir $(DESTDIR)$(pkglibexecdir)
+	-rmdir $(DESTDIR)$(pkglibexecdir) $(DESTDIR)$(docdir)
