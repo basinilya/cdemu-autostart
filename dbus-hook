@@ -1,0 +1,38 @@
+#!/bin/bash
+# /usr/local/bin/dbus-hook
+
+CDEMU_CONFDIR=~/.config
+CDEMU_CONFFILE=~/.config/cdemu.save
+
+SYSTEMCTL=/usr/bin/systemctl
+CDEMU=/usr/bin/cdemu
+
+echo "$1"
+case $1 in
+	pre-start)
+		echo "starting dbus-post.service..."
+		$SYSTEMCTL --user start dbus-post.service >/dev/null 2>&1 &
+		;;
+	post-start)
+		echo "restoring cdemu mounts..."
+		{
+			read -r x; read -r x; # skip header
+			while read -r n b f; do
+				if [ x"True" = x"$b" ]; then
+					echo "$n" "$f"
+					$CDEMU load "$n" "$f"
+				fi
+			done
+		} <"$CDEMU_CONFFILE"
+		;;
+	pre-stop)
+		echo "saving cdemu mounts..."
+		#echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+		if /usr/bin/pgrep -u "${USER:?}" -x cdemu-daemon >/dev/null; then
+			mkdir -p "$CDEMU_CONFDIR"
+			$CDEMU status >"$CDEMU_CONFFILE"
+		else
+			rm -f "$CDEMU_CONFFILE"
+		fi
+		;;
+esac

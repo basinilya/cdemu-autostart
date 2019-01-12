@@ -1,0 +1,9 @@
+# /etc/systemd/user/dbus-pre.service
+[Service]
+ExecStart=/usr/local/bin/dbus-hook pre-start
+# will be started again when dbus restarts
+RemainAfterExit=false
+
+[Install]
+# systemctl --user enable dbus-pre
+WantedBy=dbus.service

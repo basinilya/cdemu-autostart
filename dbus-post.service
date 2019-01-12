@@ -1,0 +1,12 @@
+# /etc/systemd/user/dbus-post.service
+[Service]
+ExecStart=/usr/local/bin/dbus-hook post-start
+ExecStop=/usr/local/bin/dbus-hook pre-stop
+# RemainAfterExit=true prevents immediate stop of our service
+RemainAfterExit=true
+
+[Unit]
+# Requires= supposed to stop us when dbus stops
+Requires=dbus.service
+# After= supposed to spare dbus until our service stops
+After=dbus.service
