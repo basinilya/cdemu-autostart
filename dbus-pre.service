@@ -1,6 +1,6 @@
 # /etc/systemd/user/dbus-pre.service
 [Service]
-ExecStart=/usr/local/bin/dbus-hook pre-start
+ExecStart=/usr/lib/cdemu-autostart/dbus-hook pre-start
 # will be started again when dbus restarts
 RemainAfterExit=false
 
